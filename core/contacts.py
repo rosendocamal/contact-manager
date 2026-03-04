@@ -1,4 +1,4 @@
-from db import app
+
 
 class ManagerContact:
     def __init__(self) -> None:
@@ -27,10 +27,6 @@ class ManagerContact:
             pass
         def del_all(self):
             pass
-    
-app.run()
-app.insert_data()
-
 # agregar un contacto
 # listar contactos
 # editar contactos
