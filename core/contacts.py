@@ -7,14 +7,14 @@ class ManagerContact:
     def add_contact(self, contact_name: str, contact_phone: int):
         self.dbm.insert_data((contact_name, contact_phone,))
 
-    def search_contact(self, option: int = 1, search_name: str = str(), search_phone: int = int()) -> list:
+    def search_contact(self, option: int = 1, search_name: str = str(), search_phone: int = int()) -> list[dict]:
         match option:
             case 1:
-                return self.dbm.query_data(1)
+                return self.dbm.query_data(option)
             case 2:
                 return self.dbm.query_data(option, (search_name, search_name,))
             case _:
-                return list([])
+                return list({})
 
     def edit_contact(self, edit_name: str, edit_phone: int):
         contact_rows = self.search_contact(2, edit_name, edit_phone)

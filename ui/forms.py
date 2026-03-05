@@ -1,5 +1,6 @@
 from core.contacts import ManagerContact
-import utils.input_validations
+from utils.input_validations import get_name, get_phone
+
 class Forms:
     def __init__(self, contacts: ManagerContact) -> None:
         self.contacts: ManagerContact = contacts
@@ -10,25 +11,38 @@ class Forms:
         print('·' * 50)
         print('Ingrese los datos del usuario'.center(50))
         print('·' * 50, end='\n')
-        print()
 
-        print('>>> Nombre: ')
-        contact_name: str = str()
+        prompt_name: str = '>>> Nombre: '
+        prompt_phone: str = '>>> Teléfono: '
+        error: str = '\t Dato inválido. Por favor, reintente de nuevo.'
 
-        print()
-
-        print('>>> Teléfono: ')
-        contact_phone: int = int()
-
-        self.contacts.add_contact(contact_name, contact_phone)
+        contact_name: str = get_name(prompt_name, error)
+        contact_phone: int = get_phone(prompt_phone, error)
 
         print('·' * 50)
-        print('¡El contacto ha sido agregado!')
+        try:
+            self.contacts.add_contact(contact_name, contact_phone)
+        except:
+            print('¡No se agregó el contacto!'.center(50))
+        else:
+            print('¡El contacto ha sido agregado!'.center(50))
         print('·' * 50)
 
     def display_show_contact(self):
-        pass
-    # buscar contacto
+        print('·' * 50)
+        print('MOSTRAR TODOS LOS CONTACTOS'.center(50))
+        print('·' * 50)
+        print('Núm.'.center(8),'·', 'Nombre'.center(20),'·', 'Teléfono'.center(20))
+        print('·' * 50, end='\n\n')
+
+        contacts: list[dict] = self.contacts.search_contact()
+
+        for contact in contacts:
+            print(f'{contact['id']:7d}·{contact['name']:18}·{contact['phone']:18}')
+
+        print()
+        print('·' * 50)
+
     def display_search_contact(self):
         pass
     # editar contactos
