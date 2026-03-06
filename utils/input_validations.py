@@ -17,7 +17,7 @@ def get_name(prompt: str, error: str) -> str:
             return name
         
 def get_option(prompt: str, error: str) -> int:
-    options: set = {1, 2}
+    options: set = {1, 2, 3, 4, 5, 6, 7, 8}
     while True:
         try:
             option: int = int(input(prompt))

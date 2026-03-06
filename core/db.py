@@ -1,9 +1,11 @@
+from .model import Contacts, Contact
 import sqlite3
 
 class DatabaseManager:
     def __init__(self, db_path: str) -> None:
         self.db_path: str = db_path 
         self.table: str = 'contacts'
+        self.initialize_database()
 
     def get_connection(self) -> sqlite3.Connection:
         connection: sqlite3.Connection = sqlite3.connect(self.db_path)
@@ -27,7 +29,7 @@ class DatabaseManager:
         '''
         self.basic_fn_structure(create_table)
         
-    def query_data(self, option: int, param: tuple[str | int, ...] = ()) -> list[dict]:
+    def query_data(self, option: int, param: tuple[str | int, ...] = ()) -> Contacts:
         query_statements: dict[int, str] = {
             1: f'SELECT id, name, phone FROM {self.table} ORDER BY name ASC;',
             2: f'SELECT id, name, phone FROM {self.table} WHERE name = ? or phone = ? ORDER BY name ASC;',
@@ -36,10 +38,16 @@ class DatabaseManager:
             with self.get_connection() as connection:
                 cursor: sqlite3.Cursor = connection.cursor()
                 cursor.execute(query_statements[option], param)
-                return [dict(row) for row in cursor.fetchall()]
+                rows: list = cursor.fetchall()
+
+                clean_data: Contacts = Contacts()
+                for row in rows:
+                    data: Contact = Contact(row['id'], row['name'], row['phone'])
+                    clean_data.add_contacts(data)
+                return clean_data
         except sqlite3.Error as error:
             print(error) # En proceso: en planeación el logging
-            return [{}]
+            return Contacts()
 
     def insert_data(self, params: tuple[str, int]) -> None:
         insert_statement: str = f'INSERT INTO {self.table} (name, phone) VALUES (?, ?)'
