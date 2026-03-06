@@ -6,7 +6,7 @@ class Contact:
 
 class Contacts:
     def __init__(self):
-        self.contacts: list = []
+        self.agency: list = []
 
     def add_contacts(self, contact: Contact):
-        self.contacts.append(contact)
+        self.agency.append(contact)

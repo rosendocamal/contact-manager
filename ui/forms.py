@@ -21,12 +21,11 @@ class Forms:
         contact_phone: int = get_phone(prompt_phone, error)
 
         print('·' * 50)
-        try:
-            self.contacts.add_contact(contact_name, contact_phone)
-        except Exception:
-            print('¡No se agregó el contacto!'.center(50))
-        else:
+        status: bool = self.contacts.add_contact(contact_name, contact_phone)
+        if status:
             print('¡El contacto ha sido agregado!'.center(50))
+        else:
+            print('¡No se agregó el contacto!'.center(50))
         print('·' * 50)
 
     def display_show_contact(self):
@@ -36,13 +35,17 @@ class Forms:
         print('Núm.'.center(8),'·', 'Nombre'.center(20),'·', 'Teléfono'.center(20))
         print('·' * 50, end='\n')
 
-        contacts: Contacts = self.contacts.search_contact()
+        result: tuple[Contacts, bool] = self.contacts.search_contact()
 
-        if not contacts.contacts:
-            for contact in contacts.contacts:
-                print(f'{contact.id}·{contact.name}·{contact.phone}')
+        contacts: Contacts = result[0]
+        status: bool = result[1]
 
-        print()
+        if status:
+            if contacts.agency:
+                for contact in contacts.agency:
+                    print(f'{contact.id}'.center(8),'·', f'{contact.name}'.center(20), '·', f'{contact.phone}'.center(20))
+        else:
+            print('Ocurrió un error inesperado'.center(50))
         print('·' * 50)
 
     def display_search_contact(self):
@@ -57,19 +60,22 @@ class Forms:
         error: str = '\t Dato inválido. Por favor, reintente de nuevo.'
 
         contact_name: str = get_name(prompt_name, error)
-        contact_phone: int = get_phone(prompt_phone, error)
 
-        contacts: Contacts = self.contacts.search_contact(2, contact_name, contact_phone)
+        result: tuple[Contacts, bool] = self.contacts.search_contact(2, contact_name)
 
-        print('·' * 50)
-        print('Núm.'.center(8),'·', 'Nombre'.center(20),'·', 'Teléfono'.center(20))
-        print('·' * 50, end='\n')
+        contacts: Contacts = result[0]
+        status: bool = result[1]
 
-        if not contacts.contacts:
-            for contact in contacts.contacts:
-                print(f'{contact.id}·{contact.name}·{contact.phone}')
+        if status: 
+            print('·' * 50)
+            print('Núm.'.center(8),'·', 'Nombre'.center(20),'·', 'Teléfono'.center(20))
+            print('·' * 50, end='\n')
 
-        print()
+            if contacts.agency:
+                for contact in contacts.agency:
+                    print(f'{contact.id}'.center(8),'·', f'{contact.name}'.center(20), '·', f'{contact.phone}'.center(20))
+        else:
+            print('Ocurrió un error inesperado'.center(50))
         print('·' * 50)
 
     def display_edit_contact(self):
@@ -84,21 +90,27 @@ class Forms:
         error: str = '\t Dato inválido. Por favor, reintente de nuevo.'
 
         name: str = get_name(prompt_name, error)
-        contact: Contacts = self.contacts.search_contact(2, name)
+        result: tuple[Contacts, bool] = self.contacts.search_contact(2, name)
+
+        contact: Contacts = result[0]
+        status: bool = result[1]
         
-        if not contact.contacts:
-            contact_name: str = get_name(prompt_name, error)
-            contact_phone: int = get_phone(prompt_phone, error)
-            print('·' * 50)
-            try:
-                self.contacts.edit_contact(contact_name, contact_phone)
-            except Exception:
-                print('¡No se modificó el contacto!'.center(50))
+        if status:
+            if contact.agency:
+                contact_name: str = get_name(prompt_name, error)
+                contact_phone: int = get_phone(prompt_phone, error)
+                print('·' * 50)
+
+                status: bool = self.contacts.edit_contact(name, contact_name, contact_phone)
+
+                if status:
+                    print('¡El contacto ha sido modificado!'.center(50))
+                else:
+                    print('¡No se modificó el contacto!'.center(50))
             else:
-                print('¡El contacto ha sido modificado!'.center(50))
-        else:
-            print('¡No se existe el contacto!'.center(50))
-            print('·' * 50)
+                print('·' * 50)
+                print('¡No se existe el contacto!'.center(50))
+        print('·' * 50)
 
     def display_delete_contact(self):
         print('·' * 50)
