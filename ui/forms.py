@@ -125,22 +125,54 @@ class Forms:
         contact_name: str = get_name(prompt_name, error)
 
         print('·' * 50)
-        try:
-            self.contacts.delete_contact(contact_name)
-        except Exception:
-            print('¡No se eliminó el contacto!'.center(50))
-        else:
+
+        status: bool = self.contacts.delete_contact(contact_name)
+        if status:
             print('¡El contacto ha sido eliminado!'.center(50))
+        else:
+            print('¡No se eliminó el contacto!'.center(50))
         print('·' * 50)
 
     # import datos
     def display_import_contacts(self):
-        pass
-    # export datos
-    def display_export_contacts(self):
-        pass
+        print('·' * 50)
+        print('IMPORTAR CONTACTOS'.center(50))
+        print('·' * 50, end='\n')
 
-    # salir
+        prompt_name: str = '>>> Ruta del archivo de importación: '
+        error: str = '\t Dato inválido. Por favor, reintente de nuevo.'
+
+        csv_path: str = get_name(prompt_name, error)
+
+        print('·' * 50)
+
+        status: bool = self.contacts.csv_import_contacts(csv_path)
+        if status:
+            print('¡Los contactos han sido importados!'.center(50))
+        else:
+            print('¡Los contactos no fueron importados!'.center(50))
+            print('FORMATO CSV: id,name,phone')
+        print('·' * 50)
+    
+    def display_export_contacts(self):
+        print('·' * 50)
+        print('EXPORTAR CONTACTOS'.center(50))
+        print('·' * 50, end='\n')
+
+        prompt_name: str = '>>> Ruta del archivo de exportación: '
+        error: str = '\t Dato inválido. Por favor, reintente de nuevo.'
+
+        csv_path: str = get_name(prompt_name, error)
+
+        print('·' * 50)
+
+        status: bool = self.contacts.csv_export_contacts(csv_path)
+        if status:
+            print('¡Los contactos han sido exportados!'.center(50))
+        else:
+            print('¡Los contactos no fueron exportados!'.center(50))
+        print('·' * 50)
+
     def display_exit_menu(self) -> bool:
         print()
         print('·' * 50)

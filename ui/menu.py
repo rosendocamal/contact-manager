@@ -2,8 +2,8 @@ from .forms import Forms
 from core.contacts import ManagerContact
 from utils.input_validations import get_option
 class Menu:
-    def __init__(self, dbm_rute: str) -> None:
-        self.contacts: ManagerContact = ManagerContact(dbm_rute)
+    def __init__(self, dbm_rute: str, dbm_logs: str) -> None:
+        self.contacts: ManagerContact = ManagerContact(dbm_rute, dbm_logs)
         self.forms = Forms(self.contacts)
 
     def run(self):
@@ -33,6 +33,8 @@ class Menu:
                     case 8:
                         if self.forms.display_exit_menu():
                             break
+
+                input('>>> Presione una ENTER para continuar. ')
                         
         except KeyboardInterrupt:
             self.forms.display_exit_menu()

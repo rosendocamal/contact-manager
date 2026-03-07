@@ -2,9 +2,11 @@ from .model import Contacts, Contact
 import sqlite3
 
 class DatabaseManager:
-    def __init__(self, db_path: str) -> None:
+    def __init__(self, db_path: str, db_logs: str) -> None:
         self.db_path: str = db_path 
+        self.logs: str = db_logs
         self.table: str = 'contacts'
+        self.columns: tuple[str, ...] = ('id', 'name', 'phone',)
         self.initialize_database()
 
     def get_connection(self) -> sqlite3.Connection:
@@ -17,7 +19,8 @@ class DatabaseManager:
             with self.get_connection() as connection:
                 connection.execute(sql_statement, params)
         except sqlite3.Error as error:
-            print(error) # En proceso: en planeación el logging
+            with open(f'{self.logs}/crud.log', 'a') as log:
+                log.write(f'{error}\n')
             return False
         else:
             return True
@@ -49,7 +52,8 @@ class DatabaseManager:
                     clean_data.agency.append(data)
                 return (clean_data, True,)
         except sqlite3.Error as error:
-            print(error) # En proceso: en planeación el logging
+            with open(f'{self.logs}/crud.log', 'a') as log:
+                log.write(f'{error}\n')
             return (Contacts(), False,)
 
     def insert_data(self, params: tuple[str, int]) -> bool:
